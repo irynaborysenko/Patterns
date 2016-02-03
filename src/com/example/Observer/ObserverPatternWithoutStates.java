@@ -29,7 +29,9 @@ public class ObserverPatternWithoutStates {
 
     interface Observable {
         void attachObserver(Observer observer);
+
         void detachObsever(Observer observer);
+
         void notifyObservers();
     }
 
@@ -65,7 +67,7 @@ public class ObserverPatternWithoutStates {
 
         @Override
         public void notifyObservers() {
-            for(Observer o : mObservers) {
+            for (Observer o : mObservers) {
                 o.onNotify();
             }
         }
@@ -139,6 +141,7 @@ public class ObserverPatternWithoutStates {
             }
         }
     }
+
     enum State {
         STATE_BABY_PLAY, STATE_BABY_GO, STATE_BABY_FALL, STATE_BABY_CRY
     }
