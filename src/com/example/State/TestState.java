@@ -7,24 +7,16 @@ package com.example.State;
 public class TestState {
     public static void main(String... args) {
         final Context context = new Context();
+        final OffState offState = new OffState();
 
-        /**
-         * or I should do like this and change slightly the Context class??
-         * context.setState(takeoffState);
-         * context.doAction();
-         */
+        context.setState(offState);
 
-
-        final TakeoffState takeoffState = new TakeoffState();
-        takeoffState.doAction(context);
-        System.out.println(context.getState().toString());//well, let it be
-
-        final FlyState flyState = new FlyState();
-        flyState.doAction(context);
-        System.out.println(context.getState().toString());
-
-        final LandState landState = new LandState();
-        landState.doAction(context);
-        System.out.println(context.getState().toString());
+        context.doAction();
+        context.doAction();
+        context.doAction();
+        context.doAction();
+        context.doAction();
+        context.doAction();
+        context.doAction();
     }
 }
