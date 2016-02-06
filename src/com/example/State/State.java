@@ -1,11 +1,21 @@
 package com.example.State;
 
+import java.util.Random;
+
 /**
  * Created by: Iryna Borysenko
  * Date: 2/5/16
  */
 public interface State {
     void doAction(Context context);
+}
+
+class StateHolder {
+    static final State startCleaner = new StartCleaner();
+    static final State closeCleaner = new CloseCleaner();
+    static final State defragDisk = new DefragDisk();
+    static final State cleanRegister = new CleanRegister();
+    static final State setAutoload = new SetAutoload();
 }
 
 class Context {
@@ -23,56 +33,141 @@ class Context {
         return state;
     }
 
+    public void startDefrag() {
+
+    }
+
+    public void searchForDataToDel() {
+
+    }
+
+    public void chooseStatusOfProg() {
+
+    }
+
+    public void endAllProcess() {
+
+    }
+
     public void doAction() {
         state.doAction(this);
     }
 
 }
 
-class OffState implements State {
-
-    public void doAction(Context context) {
-        System.out.println("The computer off");
-        context.setState(new TurnOnState());
+class RandomState {
+    public static CleanerStates getRandomState() {
+        Random random = new Random();
+        CleanerStates randoms = CleanerStates.values()[random.nextInt(CleanerStates.values().length)];
+        return randoms;
     }
 }
 
-class TurnOnState implements State {
+class StartCleaner implements State {
 
+    @Override
     public void doAction(Context context) {
-        System.out.println("The computer turns on");
-        context.setState(new OnState());
+
+        switch (RandomState.getRandomState()) {
+            case DEFRAG:
+                context.startDefrag();
+                context.setState(StateHolder.defragDisk);
+                break;
+            case CLEANREG:
+                context.searchForDataToDel();
+                context.setState(StateHolder.cleanRegister);
+                break;
+            case AUTOLOAD:
+                context.chooseStatusOfProg();
+                context.setState(StateHolder.setAutoload);
+                break;
+            case CLOSE:
+                context.endAllProcess();
+                context.setState(StateHolder.closeCleaner);
+                break;
+        }
+
     }
 }
 
-class OnState implements State {
+class DefragDisk implements State {
 
+    @Override
     public void doAction(Context context) {
-        System.out.println("The computer on");
-        context.setState(new InBrowserState());
+        switch (RandomState.getRandomState()) {
+            case CLEANREG:
+                context.searchForDataToDel();
+                context.setState(StateHolder.cleanRegister);
+                break;
+            case AUTOLOAD:
+                context.chooseStatusOfProg();
+                context.setState(StateHolder.setAutoload);
+                break;
+            case CLOSE:
+                context.endAllProcess();
+                context.setState(StateHolder.closeCleaner);
+                break;
+            default:
+                context.setState(StateHolder.defragDisk);
+                context.doAction();
+        }
     }
 }
 
-class InBrowserState implements State {
+class CleanRegister implements State {
 
+    @Override
     public void doAction(Context context) {
-        System.out.println("In the browser");
-        context.setState(new InGameState());
+        switch (RandomState.getRandomState()) {
+            case DEFRAG:
+                context.startDefrag();
+                context.setState(StateHolder.defragDisk);
+                break;
+            case AUTOLOAD:
+                context.chooseStatusOfProg();
+                context.setState(StateHolder.setAutoload);
+                break;
+            case CLOSE:
+                context.endAllProcess();
+                context.setState(StateHolder.closeCleaner);
+                break;
+            default:
+                context.setState(StateHolder.cleanRegister);
+                context.doAction();
+                break;
+        }
     }
 }
 
-class InGameState implements State {
+class SetAutoload implements State {
 
+    @Override
     public void doAction(Context context) {
-        System.out.println("In the game");
-        context.setState(new TurnOffState());
+        switch (RandomState.getRandomState()) {
+            case DEFRAG:
+                context.startDefrag();
+                context.setState(StateHolder.defragDisk);
+                break;
+            case CLEANREG:
+                context.searchForDataToDel();
+                context.setState(StateHolder.cleanRegister);
+                break;
+            case CLOSE:
+                context.endAllProcess();
+                context.setState(StateHolder.closeCleaner);
+                break;
+            default:
+                context.setState(StateHolder.setAutoload);
+                context.doAction();
+        }
     }
 }
 
-class TurnOffState implements State {
+class CloseCleaner implements State {
 
+    @Override
     public void doAction(Context context) {
-        System.out.println("The computer turns off");
-        context.setState(new OffState());
+        context.endAllProcess();
+        context.setState(StateHolder.closeCleaner);
     }
 }
