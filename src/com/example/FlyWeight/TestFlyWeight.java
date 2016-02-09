@@ -7,69 +7,83 @@ import java.util.*;
  * Date: 2/9/16
  */
 
-interface Primitive {
-    public void draw();
+abstract class Creatures {
+    public String creatureType;
+    public int power;
+    public String location;
+
+    public abstract void draw();
 }
 
-class Elf implements Primitive {
-    private int accuracy;
-    private int height;
-    private String location;
+class Elf extends Creatures {
 
-    public Elf(int accuracy) {
-        this.accuracy = accuracy;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-
+    public Elf() {
+        creatureType = "Elf";
+        power = 20;
+        location = "Forest";
     }
 
     @Override
     public void draw() {
-        System.out.println("Created elf with height " + height + " and accuracy " + accuracy + ", located in " + location + ".");
+        System.out.println("Created " + creatureType + "with power " + power + ", located in " + location + ".");
     }
 }
 
-abstract class PrimitiveFactory {
+class Ork extends Creatures {
 
-    private static Map<Integer, Elf> elfs;
-
-    static {
-        elfs = new HashMap<Integer, Elf>();
+    public Ork() {
+        creatureType = "Ork";
+        power = 50;
+        location = "Moor";
     }
 
-    public static Elf createElf(int accuracy) {
-        Elf elf = (Elf) elfs.get(accuracy);
-        if (elfs.get(accuracy) == null) {
-            elfs.put(accuracy, new Elf(accuracy));
-            System.out.println("Creating elf with accuracy : " + accuracy);
+    @Override
+    public void draw() {
+        System.out.println("Created " + creatureType + "with power " + power + ", located in " + location + ".");
+    }
+}
+
+
+class CreatureFactory {
+
+    private HashMap<Integer, Creatures> creaturesMap = new HashMap<Integer, Creatures>();
+
+    public Creatures getCreature(int creatureCode) {
+        Creatures creature = creaturesMap.get(new Integer(creatureCode));
+        if (creature == null) {
+            switch (creatureCode) {
+                case 1: {
+                    creature = new Elf();
+                    break;
+                }
+                case 2: {
+                    creature = new Ork();
+                    break;
+                }
+            }
+            creaturesMap.put(creatureCode, creature);
         }
-        return elfs.get(accuracy);
+        return creature;
     }
 }
 
 public class TestFlyWeight {
-    public static void main(String[] args) {
+    public static void main(String... args) {
+        CreatureFactory creatureFactory = new CreatureFactory();
+        Creatures creature1 = creatureFactory.getCreature(1);
+        creature1.draw();
+        System.out.println(creature1);
 
-        for (int i = 0; i < 5; ++i) {
-            Elf elf = PrimitiveFactory.createElf(40);
-            elf.setHeight(30);
-            elf.setLocation("Moor");
-            elf.draw();
-        }
+        Creatures creature2 = creatureFactory.getCreature(2);
+        creature2.draw();
+        System.out.println(creature2);
 
-        for (int i = 0; i < 5; ++i) {
-            Elf elf = PrimitiveFactory.createElf(11);
-            elf.setHeight(35);
-            elf.setLocation("Forest");
-            elf.draw();
-        }
+        Creatures creature3 = creatureFactory.getCreature(1);
+        creature3.draw();
+        System.out.println(creature3);
 
+        Creatures creature4 = creatureFactory.getCreature(1);
+        creature4.draw();
+        System.out.println(creature4);
     }
 }
-
